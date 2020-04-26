@@ -1,4 +1,4 @@
-var express = require ('express');
+var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var redis = require('redis');
@@ -19,12 +19,20 @@ app.set('view engine', 'ejs');
 
 // Add body-parser middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-    res.send('HOME');
+    var title = 'Redis To Dos';
+
+    // Fetch Todos from redis
+    client.lrange('todos', 0, -1, function (err, reply) {
+        res.render('index', {
+            title: title,
+            todos: reply
+        });
+    });
 });
 
 app.listen(3000, function (params) {
