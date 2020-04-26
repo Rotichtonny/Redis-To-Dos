@@ -12,6 +12,11 @@
 <body>
     <div class="container">
         <h1 class="text-center"><%= title %></h1>
+        <form action="/todo/add" method="post">
+            <div class="form-group">
+                <input type="text" class="form-control" name="todo" placeholder="Enter Your To Do Here">
+            </div>
+        </form>
         <% todos.forEach(function(todo){ %>
         <div class="breadcrumb"><%= todo %></div>
         <% }) %>

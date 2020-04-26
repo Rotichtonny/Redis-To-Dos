@@ -28,10 +28,27 @@ app.get('/', function (req, res) {
 
     // Fetch Todos from redis
     client.lrange('todos', 0, -1, function (err, reply) {
+        if (err) {
+            res.send(err);
+        }
+
         res.render('index', {
             title: title,
             todos: reply
         });
+    });
+});
+
+app.post('/todo/add', function (req, res, next) {
+    var todo = req.body.todo;
+
+    client.rpush('todos', todo, function (err, reply) {
+        if (err) {
+            res.send(err);
+        }
+
+        console.log('Todo Added...');
+        res.redirect('/');
     });
 });
 
