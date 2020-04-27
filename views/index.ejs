@@ -7,6 +7,11 @@
     <title>Redis To Dos</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/solar/bootstrap.css" media="screen">
     <link rel="stylesheet" href="https://bootswatch.com/_assets/css/custom.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,9 +22,20 @@
                 <input type="text" class="form-control" name="todo" placeholder="Enter Your To Do Here">
             </div>
         </form>
-        <% todos.forEach(function(todo){ %>
-        <div class="breadcrumb"><%= todo %></div>
-        <% }) %>
+
+        <form action="/todo/delete" method="post">
+            <% todos.forEach(function(todo){ %>
+            <div class="breadcrumb">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input delete" name="todos" type="checkbox" value="<%= todo %>">
+                        <%= todo %>
+                    </label>
+                </div>
+            </div>
+            <% }) %>
+            <input type="submit" value="Delete" class="btn btn-warning">
+        </form>
     </div>
 </body>
 

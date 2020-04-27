@@ -1,13 +1,13 @@
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
-var redis = require('redis');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const redis = require('redis');
 
 // Create main app variable
-var app = express();
+let app = express();
 
 // Redis client - connect to redis
-var client = redis.createClient();
+const client = redis.createClient();
 
 client.on('connect', function (params) {
     console.log('Connected To Redis...');
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-    var title = 'Redis To Dos';
+    let title = 'Redis To Dos';
 
     // Fetch Todos from redis
     client.lrange('todos', 0, -1, function (err, reply) {
@@ -40,7 +40,7 @@ app.get('/', function (req, res) {
 });
 
 app.post('/todo/add', function (req, res, next) {
-    var todo = req.body.todo;
+    let todo = req.body.todo;
 
     client.rpush('todos', todo, function (err, reply) {
         if (err) {
@@ -48,6 +48,25 @@ app.post('/todo/add', function (req, res, next) {
         }
 
         console.log('Todo Added...');
+        res.redirect('/');
+    });
+});
+
+app.post('/todo/delete', function (req, res, next) {
+    let delTodos = req.body.todos;
+
+    client.lrange('todos', 0, -1, function (err, todos) {
+        for (let i = 0; i < todos.length; i++) {
+            if (delTodos) {
+                if (delTodos.indexOf(todos[i]) > -1) {
+                    client.lrem('todos', 0, todos[i], function (params) {
+                        if (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+            }
+        }
         res.redirect('/');
     });
 });
